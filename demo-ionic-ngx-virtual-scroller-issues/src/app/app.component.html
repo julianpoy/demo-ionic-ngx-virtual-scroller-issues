@@ -1,29 +1,51 @@
 <ion-app>
-  <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
-      <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi@ionicframework.com</ion-note>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        ngx-virtual-scroller issues demo
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content #contentContainer>
+    <ion-searchbar></ion-searchbar>
 
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
+    <virtual-scroller
+      #scroll
+      bufferAmount="5"
+      (vsEnd)="fetchMoreRecipes($event)"
+      [items]="recipes"
+      [parentScroll]="scrollElement"
+      [enableUnequalChildrenSizes]="true">
 
-        <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
+      <div #container>
+        <ion-item *ngFor="let recipe of scroll.viewPortItems; trackBy: trackByFn" class="recipeItem"
+          (click)="openRecipe(recipe, $event)"
+          button>
+          <ion-thumbnail *ngIf="recipe.images && recipe.images.length > 0" slot="start" size="200px">
+            <img [src]="recipe.images[0].location" />
+          </ion-thumbnail>
 
-          <ion-item *ngFor="let label of labels" lines="none">
-            <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-            <ion-label>{{ label }}</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-content>
-    </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
-  </ion-split-pane>
+          <ion-label>
+            <h2 class="ion-text-wrap">{{ recipe.title }}</h2>
+            <p class="ion-text-wrap">{{ recipe.description }}</p>
+            <p *ngIf="(recipe.source || recipe.url)" class="ion-text-wrap">Source: {{ recipe.source || recipe.url }}</p>
+
+            <p *ngIf="recipe.folder === 'inbox' && recipe.fromUser">
+              <b>From: {{ recipe.fromUser.name || recipe.fromUser.email }}</b>
+            </p>
+
+            <p *ngIf="recipe.labels && recipe.labels.length > 0" class="ion-text-wrap">
+              Labels: <span *ngFor="let label of recipe.labels; let idx = index">{{ label.title }}<span *ngIf='idx+1 < recipe.labels.length'>,&nbsp;</span></span>
+            </p>
+          </ion-label>
+        </ion-item>
+      </div>
+    </virtual-scroller>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="newRecipe()" color="primary">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
 </ion-app>
