@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "demo-ionic-ngx-virtual-scroller-issues",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

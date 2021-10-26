@@ -1,0 +1,7 @@
+{
+  "name": "demo-ionic-ngx-virtual-scroller-issues",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
