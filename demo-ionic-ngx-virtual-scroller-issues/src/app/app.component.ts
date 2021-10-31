@@ -51,4 +51,8 @@ export class AppComponent implements AfterViewInit {
     this.recipes = this.recipes.concat(response.data);
   }
 
+  trackByFn(index, item) {
+    return item.id;
+  }
+
 }
